@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startRecording();
+                startRecording();System.out.println(" click" );
             }
         });
 
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         Intent serviceIntent = new Intent(this, SensorDataService.class);
         serviceIntent.putExtra("user_id", userId);
         serviceIntent.putExtra("server_url", serverUrl); // Added server URL field
+        System.out.println(" record" );
         startService(serviceIntent);
 
         // Update UI
