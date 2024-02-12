@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/edit_text_user_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="User ID"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/edit_text_server_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_text_user_id"
+        android:layout_marginTop="16dp"
+        android:hint="Server Address"
+        android:minHeight="48dp" />
+
+    <Button
+        android:id="@+id/button_sensor_selection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_text_server_address"
+        android:layout_marginTop="16dp"
+        android:text="Select Sensors" />
+
+    <Button
+        android:id="@+id/button_start_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_sensor_selection"
+        android:layout_marginTop="16dp"
+        android:text="Start" />
+
+</RelativeLayout>
