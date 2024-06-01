@@ -25,11 +25,13 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText userIdEditText, serverAddressEditText;
+    private EditText portEditText, serverAddressEditText,userIdEditText;
     private static final String TAG = "Main_Activity";
 
-    private static String userId ;
     private static String serverAddress;
+    private static String port ;
+    private static String userId ;
+
     private static AsyncTask<Void, Void, Boolean> network;
 
 
@@ -40,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userIdEditText = findViewById(R.id.edit_text_user_id);
+        portEditText = findViewById(R.id.edit_text_port);
         serverAddressEditText = findViewById(R.id.edit_text_server_address);
-
+        userIdEditText = findViewById(R.id.edit_text_userId);
         Button sensorSelectionButton = findViewById(R.id.button_sensor_selection);
         sensorSelectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,18 +94,20 @@ public class MainActivity extends AppCompatActivity {
     private boolean isRecording = false;
 
     private void startRecording() throws ExecutionException, InterruptedException {
-        userId = userIdEditText.getText().toString();
         serverAddress = serverAddressEditText.getText().toString();
+        port = portEditText.getText().toString();
+        userId=userIdEditText.getText().toString();
+
         // Check if connected to Wi-Fi
         if (!isConnectedToWifi()) {
             Toast.makeText(this, "Please connect to Wi-Fi to proceed", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (userId.isEmpty() || serverAddress.isEmpty()) {
-            Toast.makeText(this, "Please enter User ID and Server Address", Toast.LENGTH_SHORT).show();
+        if (serverAddress.isEmpty() || port.isEmpty()) {
+            Toast.makeText(this, "Please enter Server Address and Port", Toast.LENGTH_SHORT).show();
             return;
         }
-        try {
+        /*try {
             network=new CheckNetworkTask().execute();
             boolean isNetworkReachable = network.get(); // This will wait for the AsyncTask to finish and retrieve its result
             if (!isNetworkReachable) {
@@ -115,12 +119,13 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             // Handle the exception
             return;
-        }
+        }*/
         // Start the SendDataService to send data to server
         Intent intent = new Intent(this, SendDataService.class);
         intent.setAction("START_SENDING");
-        intent.putExtra("user_id", userId);
         intent.putExtra("server_address", serverAddress);
+        intent.putExtra("port", port);
+        intent.putExtra("userId", userId);
         intent.putParcelableArrayListExtra("selected_sensors", new ArrayList<>(selectedSensors));
         startService(intent);
 
@@ -160,12 +165,12 @@ public class MainActivity extends AppCompatActivity {
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
             if (netInfo != null && netInfo.isConnected()) {
                 try {
-                    URL url = new URL("http://"+serverAddress+":8080");   // Change to "http://google.com" for www  test.
+                    URL url = new URL("http://"+serverAddress+":"+port);   // Change to "http://google.com" for www  test.
                     HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
                     urlc.setConnectTimeout(5 * 1000);          // 5 s.
                     urlc.connect();
                     Log.wtf( "isURLReachable: ","Server Response " +urlc.getResponseCode());
-                    if (urlc.getResponseCode() == 404) {        // 404 = "Server not found" because at this address we have nothing to return in request that's why 404 code (http connection is fine).
+                    if (urlc.getResponseCode() != 404) {        // 404 = "Server not found" because at this address we have nothing to return in request that's why 404 code (http connection is fine).
                         Log.wtf("Connection", "Success !");
                         return true;
                     } else {
